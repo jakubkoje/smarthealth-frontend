@@ -8,16 +8,19 @@
         <UIcon name="i-lucide-home" class="text-primary-700 text-xl" />
       </NuxtLink>
 
-      <NuxtLink to="/dashboard" class="hover:bg-primary-200 rounded-lg p-2">
-        <UIcon
-          name="i-lucide-layout-dashboard"
-          class="text-primary-700 text-xl"
-        />
-      </NuxtLink>
-
-      <NuxtLink to="/" class="hover:bg-primary-200 rounded-lg p-2">
-        <UIcon name="i-lucide-settings" class="text-primary-700 text-xl" />
-      </NuxtLink>
+      <UTooltip
+        v-for="item in tools"
+        :text="item.tooltipText"
+        :shortcuts="item.tooltipShortcuts"
+      >
+        <UButton
+          class="hover:bg-primary-200 rounded-lg p-2"
+          :icon="item.iconName"
+          variant="ghost"
+          tooltip="xx"
+        >
+        </UButton>
+      </UTooltip>
 
       <div class="flex-grow"></div>
     </div>
@@ -56,13 +59,46 @@
       </header>
 
       <!-- Page Content -->
-      <main class="bg-primary-50 flex-1 overflow-auto">
+      <main class="flex-1 overflow-auto bg-white">
         <slot></slot>
       </main>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // No additional setup needed
+
+const tools = [
+  {
+    to: "",
+    iconName: "i-lucide-rotate-cw",
+    tooltipText: "Rotate image",
+    tooltipShortcuts: ["⌘", "O"],
+  },
+  {
+    to: "",
+    iconName: "i-lucide-camera",
+    tooltipText: "Snapshot area",
+    tooltipShortcuts: ["⌘", "O"],
+  },
+  {
+    to: "",
+    iconName: "i-lucide-expand",
+    tooltipText: "Full Screen",
+    tooltipShortcuts: ["⌘", "O"],
+  },
+  {
+    to: "",
+    iconName: "i-lucide-square-dashed-mouse-pointer",
+    tooltipText: "Select area for analysis",
+    tooltipShortcuts: ["⌘", "O"],
+  },
+  {
+    to: "",
+    iconName: "i-lucide-message-circle-question",
+    tooltipText: "Chat with AI",
+    tooltipShortcuts: ["⌘", "O"],
+  },
+];
 </script>
