@@ -1,29 +1,28 @@
 <template>
-   <!-- Modal for New Record --> <ModalWindow
+   <ModalWindow
     :isOpen="isNRModalOpen"
     @close="isNRModalOpen = false"
     ><DataTableRecord
       :columns="columns"
       :objectData="newRecordTemplate"
       :existing="false"
-      :updateAction="updateAction"
+      :updateAction="handleNewRecord"
       openedFrom="create"
-      @updated="isNRModalOpen = false"
+      @updated="handleRecordCreated"
     ></DataTableRecord></ModalWindow
-  > <!-- Modal for Existing Record in Table --> <ModalWindow
+  ><ModalWindow
     :isOpen="isERModalOpen"
     @close="isERModalOpen = false"
     ><DataTableRecord
       :columns="columns"
       :objectData="currentRowClicked"
       :existing="true"
-      :updateAction="() => {}"
+      :updateAction="handleUpdateRecord"
       openedFrom="edit"
-      @updated="isERModalOpen = false"
+      @updated="handleRecordUpdated"
     ></DataTableRecord></ModalWindow
   >
   <div class="flex flex-col gap-2">
-     <!-- Actions and Filters -->
     <div class="flex w-full gap-8">
        <button
         class="flex w-2/12 items-center justify-center gap-4 rounded-lg border border-blue-400 bg-blue-50 px-3 py-1 text-sm text-blue-500 transition-colors hover:bg-blue-100"
@@ -32,7 +31,6 @@
          + New Record </button
       >
       <div class="mx-1 w-[1px] bg-slate-300"></div>
-       <!-- Records number -->
       <div class="flex items-center gap-2">
 
         <p class="text-sm text-slate-700">Show records per page:</p>
@@ -49,7 +47,6 @@
       </div>
 
       <div class="mx-1 w-[1px] bg-slate-300"></div>
-       <!-- Search Filters --> <!-- Column Selection -->
       <div class="flex flex-1">
 
         <div class="">
@@ -61,7 +58,6 @@
           ></SelectionMenu
           >
         </div>
-         <!-- Search Input -->
         <div class="flex flex-1 space-y-2 rounded">
            <input
             v-model="searchValue"
@@ -78,7 +74,6 @@
       </div>
 
     </div>
-     <!-- Data Table -->
     <div
       class="shadow-shadowEven overflow-hidden rounded-lg border border-slate-300"
     >
@@ -90,7 +85,6 @@
           <thead class="sticky top-0 z-10 border-b border-slate-300 shadow">
 
             <tr class="">
-               <!-- Add Number column -->
               <th
                 style="width: 10%; max-width: 10%; min-width: 10%"
                 class="bg-slate-100 p-2 text-left font-light text-slate-800"
@@ -461,6 +455,29 @@ const handleRowClickAction = (rowIndex: number) => {
   if (props.rowClickAction) {
     props.rowClickAction(props.rows[rowIndex]);
   }
+};
+
+const handleNewRecord = async (data: DataRow) => {
+  await props.updateAction(data);
+  props.rows.push(data);
+};
+
+const handleUpdateRecord = async (data: DataRow) => {
+  await props.updateAction(data);
+  const index = props.rows.findIndex(row => row.id === data.id);
+  if (index !== -1) {
+    props.rows[index] = data;
+  }
+};
+
+const handleRecordCreated = () => {
+  isNRModalOpen.value = false;
+  // Additional logic after creation if needed
+};
+
+const handleRecordUpdated = () => {
+  isERModalOpen.value = false;
+  // Additional logic after update if needed
 };
 </script>
 
