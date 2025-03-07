@@ -9,7 +9,7 @@ export type DataColumn =
       isHidden?: boolean;
       isEditable?: boolean;
       isAdminOnly?: boolean;
-      widthPercentage?: string;
+      widthPercentage?: number;
       label?: string;
       defaultValue?: string | number | boolean;
       dontDisplayInScreen?: ("create" | "edit" | "table")[];
@@ -23,7 +23,7 @@ export type DataColumn =
       isEditable?: boolean;
       isAdminOnly?: boolean;
       isDynamic?: false; // We can add new keys to it
-      widthPercentage?: string;
+      widthPercentage?: number;
       label?: string;
       defaultValue?: string | number | boolean;
       dontDisplayInScreen?: ("create" | "edit" | "table")[];
@@ -37,7 +37,7 @@ export type DataColumn =
       isAdminOnly?: boolean;
       isDynamic: true; // We can add new keys to it
       templateColumn: DataColumn;
-      widthPercentage?: string;
+      widthPercentage?: number;
       label?: string;
       defaultValue?: string | number | boolean;
       dontDisplayInScreen?: ("create" | "edit" | "table")[];
@@ -50,7 +50,7 @@ export type DataColumn =
       isHidden?: boolean;
       isEditable?: boolean;
       isAdminOnly?: boolean;
-      widthPercentage?: string;
+      widthPercentage?: number;
       label?: string;
       defaultValue?: string | number | boolean;
       dontDisplayInScreen?: ("create" | "edit" | "table")[];
