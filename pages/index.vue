@@ -1,8 +1,5 @@
 <template>
   <div class="p-8">
-    <div class="flex justify-center mb-12">
-      <h1 class="text-3xl font-medium text-gray-800">Home Page</h1>
-    </div>
     
     <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
       <div class="flex flex-col gap-8">
@@ -13,8 +10,7 @@
             Upload medical data and easily view them in your browser. Analyze health metrics and
             collaborate with healthcare professionals. Use our platform for comprehensive health monitoring and management.
           </p>
-          
-          <a href="#" class="text-blue-500 hover:underline">Learn more</a>
+        
         </div>
         
         <div>

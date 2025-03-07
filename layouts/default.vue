@@ -59,7 +59,7 @@
 
       <!-- Page Content -->
       <main class="bg-primary-50 flex-1 overflow-auto">
-        <slot />
+        <slot></slot>
       </main>
     </div>
   </div>
