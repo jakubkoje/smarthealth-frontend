@@ -2,7 +2,7 @@
   <div class="h-screen">
     <!-- Top Header -->
     <header
-      class="flex h-16 items-center border-b border-primary-200 bg-primary-50 pl-5 pr-6"
+      class="flex h-16 items-center border-b border-primary-400 bg-primary-200 pl-5 pr-6"
     >
       <div class="flex flex-1 items-center">
         <div class="flex items-center">
@@ -38,7 +38,7 @@
     <div class="flex h-[calc(100vh-4rem)]">
       <!-- Side Toolbar -->
       <div
-        class="z-20 flex w-16 flex-col items-center space-y-6 border-r border-primary-200 bg-primary-100 py-4"
+        class="z-20 flex w-16 flex-col items-center space-y-6 border-r border-primary-400 bg-primary-100 py-4"
       >
         <UTooltip
           v-for="item in tools"
@@ -62,7 +62,7 @@
             :class="[
               'rounded-lg p-2',
               viewerStore.eyeOpen
-                ? 'text-primary-50 hover:bg-primary-400'
+                ? 'text-primary-200 hover:bg-primary-600'
                 : 'text-primary-700 hover:bg-primary-200',
             ]"
             :variant="viewerStore.eyeOpen ? 'solid' : 'ghost'"
@@ -87,7 +87,7 @@
             :class="[
               'rounded-lg p-2',
               viewerStore.selectionClicked
-                ? 'text-primary-50 hover:bg-primary-400'
+                ? 'text-primary-200 hover:bg-primary-600'
                 : 'text-primary-700 hover:bg-primary-200',
             ]"
             :variant="viewerStore.selectionClicked ? 'solid' : 'ghost'"
@@ -108,7 +108,7 @@
           <Transition name="slide-up">
             <div
               v-if="viewerStore.selectionComplete"
-              class="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center border-t border-t-primary-200 bg-primary-50 bg-opacity-80 p-4 shadow-lg"
+              class="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center border-t border-t-primary-400 bg-primary-200 bg-opacity-80 p-4 shadow-lg"
             >
               <UButton class="" @click="isVisible = true"
                 >Process patch</UButton
@@ -123,32 +123,36 @@
         <!-- Statisics -->
         <div
           v-if="isVisible"
-          class="sidebar z-20 flex w-fit max-w-80 flex-col items-center gap-8 space-y-6 border-l border-l-primary-200 bg-primary-50 p-4"
+          class="sidebar z-20 flex w-fit max-w-80 flex-col items-center gap-8 space-y-6 border-l border-l-primary-400 bg-primary-200 p-4"
         >
           <p class="text-lg font-semibold text-primary-900">Statistics</p>
 
-          <table
-            class="w-full overflow-hidden rounded-lg border border-primary-200 shadow-md"
-          >
-            <thead class="bg-primary-100 text-primary-800">
-              <tr>
-                <th class="border-b px-4 py-2 text-left font-normal">
-                  Category
-                </th>
-                <th class="border-b px-4 py-2 text-left font-normal">Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(row, index) in tableData"
-                :key="index"
-                class="border-b bg-white last:border-0 hover:bg-gray-100"
-              >
-                <td class="px-4 py-2">{{ row.category }}</td>
-                <td class="px-4 py-2">{{ row.value }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="w-full rounded-lg border border-primary-400">
+            <table class="w-full overflow-hidden rounded-lg shadow-md">
+              <thead class="bg-primary-100 text-primary-800">
+                <tr class="border-b border-primary-400">
+                  <th
+                    class="border-r border-primary-400 px-4 py-2 text-left font-normal"
+                  >
+                    Category
+                  </th>
+                  <th class="px-4 py-2 text-left font-normal">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(row, index) in tableData"
+                  :key="index"
+                  class="border-b border-primary-300 bg-white last:border-none hover:bg-gray-100"
+                >
+                  <td class="border-r border-primary-400 px-4 py-2">
+                    {{ row.category }}
+                  </td>
+                  <td class="px-4 py-2">{{ row.value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <div class="aspect-square h-64 w-64">
             <p class="text-center text-primary-800">Cell Percentage</p>
