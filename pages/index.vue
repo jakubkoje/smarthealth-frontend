@@ -1,7 +1,7 @@
 <template>
-  <div class="p-8">
+  <div class="p-6">
     
-    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
       <div class="flex flex-col gap-8">
         <div>
           <h2 class="text-2xl font-semibold text-gray-800 mb-4">smartHealth Platform</h2>

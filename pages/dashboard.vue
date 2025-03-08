@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8">
+  <div class="p-6">
     <div class="mb-12 flex justify-center">
       <h1 class="text-3xl font-medium text-gray-800">Cases</h1>
     </div>
