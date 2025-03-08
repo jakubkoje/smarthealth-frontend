@@ -78,7 +78,7 @@
       class="shadow-shadowEven overflow-hidden rounded-lg border border-slate-300"
     >
 
-      <div class="max-h-[calc(100dvh-24rem)] min-h-48 overflow-y-auto">
+      <div class="max-h-[calc(100dvh-24rem)] min-h-48">
 
         <table class="w-full table-fixed rounded-lg text-slate-800">
 

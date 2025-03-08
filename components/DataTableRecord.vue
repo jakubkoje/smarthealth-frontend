@@ -5,47 +5,179 @@
     </h2>
 
     <form @submit.prevent="handleSubmit" class="space-y-6">
-      
-      <UFormGroup label="Case ID" name="id">
-        <UInput
-          v-model="formData.id"
-          :disabled="existing"
-          placeholder="CASE###"
-        />
-      </UFormGroup>
+      <!-- Basic Information Section -->
+      <div class="mb-8">
+        <h3 class="mb-4 text-lg font-medium text-gray-700">Basic Information</h3>
+        <div class="space-y-4">
+          <!-- ID Field -->
+          <UFormGroup label="Case ID" name="id">
+            <UInput
+              v-model="formData.id"
+              :disabled="existing"
+              placeholder="CASE###"
+            />
+          </UFormGroup>
 
-      <UFormGroup label="Patient Name" name="patientName" required>
-        <UInput
-          v-model="formData.patientName"
-          placeholder="Enter patient name"
-        />
-      </UFormGroup>
+          <!-- Patient Name Field -->
+          <UFormGroup 
+            label="Patient Name" 
+            name="patientName" 
+            required
+            :error="validationErrors.patientName"
+          >
+            <UInput
+              v-model="formData.patientName"
+              placeholder="Enter patient name"
+              @blur="validateField('patientName')"
+            />
+          </UFormGroup>
 
-      <UFormGroup label="Age" name="age" required>
-        <UInput
-          v-model="formData.age"
-          type="number"
-          placeholder="Enter age"
-          min="0"
-          max="150"
-        />
-      </UFormGroup>
+          <!-- Age Field -->
+          <UFormGroup 
+            label="Age" 
+            name="age" 
+            required
+            :error="validationErrors.age"
+          >
+            <UInput
+              v-model.number="formData.age"
+              type="number"
+              placeholder="Enter age"
+              min="0"
+              max="150"
+              @blur="validateField('age')"
+            />
+          </UFormGroup>
 
-      <UFormGroup label="Condition" name="condition" required>
-        <UInput
-          v-model="formData.condition"
-          placeholder="Enter medical condition"
-        />
-      </UFormGroup>
+          <!-- Condition Field -->
+          <UFormGroup 
+            label="Condition" 
+            name="condition" 
+            required
+            :error="validationErrors.condition"
+          >
+            <UInput
+              v-model="formData.condition"
+              placeholder="Enter medical condition"
+              @blur="validateField('condition')"
+            />
+          </UFormGroup>
 
-      <UFormGroup label="Status" name="status" required>
-        <USelect
-          v-model="formData.status"
-          :options="['Active', 'Pending', 'Completed']"
-          placeholder="Select status"
-        />
-      </UFormGroup>
+          <!-- Status Field -->
+          <UFormGroup 
+            label="Status" 
+            name="status" 
+            required
+            :error="validationErrors.status"
+          >
+            <USelect
+              v-model="formData.status"
+              :options="['Active', 'Pending', 'Completed']"
+              placeholder="Select status"
+              @blur="validateField('status')"
+            />
+          </UFormGroup>
+        </div>
+      </div>
 
+      <!-- Medical Details Section -->
+      <div class="mb-8">
+        <h3 class="mb-4 text-lg font-medium text-gray-700">Medical Details</h3>
+        <div class="space-y-4">
+          <!-- Tumor Size Field -->
+          <UFormGroup 
+            label="Tumor Size" 
+            name="tumorSize"
+            required
+            :error="validationErrors.tumorSize"
+          >
+            <UInput
+              v-model="formData.tumorSize"
+              placeholder="e.g., 2.5 x 3.0 x 2.0 cm"
+              @blur="validateField('tumorSize')"
+            />
+          </UFormGroup>
+
+          <!-- Necrosis Presence -->
+          <UFormGroup 
+            label="Necrosis Present" 
+            name="necrosisPresent"
+          >
+            <URadio
+              v-model="formData.necrosisPresent"
+              :options="[
+                { label: 'Yes', value: true },
+                { label: 'No', value: false }
+              ]"
+            />
+          </UFormGroup>
+
+          <!-- Angioinvasion Presence -->
+          <UFormGroup 
+            label="Angioinvasion Present" 
+            name="angioinvasionPresent"
+            help="Invasion into blood vessels"
+          >
+            <URadio
+              v-model="formData.angioinvasionPresent"
+              :options="[
+                { label: 'Yes', value: true },
+                { label: 'No', value: false }
+              ]"
+            />
+          </UFormGroup>
+
+          <!-- Perineural Invasion -->
+          <UFormGroup 
+            label="Perineural Invasion Present" 
+            name="perineuralInvasionPresent"
+            help="Invasion around nerves"
+          >
+            <URadio
+              v-model="formData.perineuralInvasionPresent"
+              :options="[
+                { label: 'Yes', value: true },
+                { label: 'No', value: false }
+              ]"
+            />
+          </UFormGroup>
+
+          <!-- Resection Margins -->
+          <UFormGroup 
+            label="Resection Margins Status" 
+            name="resectionMargins"
+            help="Was the tumor completely removed?"
+            required
+            :error="validationErrors.resectionMargins"
+          >
+            <URadio
+              v-model="formData.resectionMargins"
+              :options="[
+                { label: 'Positive', value: 'positive' },
+                { label: 'Negative', value: 'negative' }
+              ]"
+              @blur="validateField('resectionMargins')"
+            />
+          </UFormGroup>
+
+          <!-- Lymph Nodes Status -->
+          <UFormGroup 
+            label="Lymph Nodes Status" 
+            name="lymphNodesStatus"
+            required
+            :error="validationErrors.lymphNodesStatus"
+          >
+            <UTextarea
+              v-model="formData.lymphNodesStatus"
+              placeholder="Describe the status of lymph nodes"
+              rows="3"
+              @blur="validateField('lymphNodesStatus')"
+            />
+          </UFormGroup>
+        </div>
+      </div>
+
+      <!-- Last Update Field -->
       <UFormGroup label="Last Update" name="lastUpdate">
         <UInput
           v-model="formData.lastUpdate"
@@ -54,6 +186,7 @@
         />
       </UFormGroup>
 
+      <!-- Form Actions -->
       <div class="flex justify-end gap-4 pt-4">
         <UButton
           color="gray"
@@ -66,6 +199,7 @@
           type="submit"
           color="primary"
           :loading="loading"
+          :disabled="!isFormValid"
         >
           {{ existing ? 'Update' : 'Create' }}
         </UButton>
@@ -75,7 +209,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import type { DataColumn, DataRow } from '~/types/data-table';
 
 const props = defineProps<{
@@ -89,7 +223,94 @@ const props = defineProps<{
 const emit = defineEmits(['updated']);
 
 const loading = ref(false);
-const formData = ref<DataRow>({ ...props.objectData });
+const formData = ref<DataRow>({
+  ...{
+    id: '',
+    patientName: '',
+    age: 0,
+    condition: '',
+    status: '',
+    lastUpdate: '',
+    tumorSize: '',
+    necrosisPresent: false,
+    angioinvasionPresent: false,
+    perineuralInvasionPresent: false,
+    resectionMargins: 'negative',
+    lymphNodesStatus: ''
+  },
+  ...props.objectData
+});
+
+const validationErrors = ref<Record<string, string>>({});
+
+// Validation rules
+const validateField = (fieldName: string) => {
+  validationErrors.value[fieldName] = '';
+  
+  switch (fieldName) {
+    case 'patientName':
+      if (!formData.value.patientName) {
+        validationErrors.value.patientName = 'Patient name is required';
+      }
+      break;
+    case 'age':
+      if (!formData.value.age) {
+        validationErrors.value.age = 'Age is required';
+      } else if (formData.value.age < 0 || formData.value.age > 150) {
+        validationErrors.value.age = 'Age must be between 0 and 150';
+      }
+      break;
+    case 'condition':
+      if (!formData.value.condition) {
+        validationErrors.value.condition = 'Condition is required';
+      }
+      break;
+    case 'status':
+      if (!formData.value.status) {
+        validationErrors.value.status = 'Status is required';
+      }
+      break;
+    case 'tumorSize':
+      if (!formData.value.tumorSize) {
+        validationErrors.value.tumorSize = 'Tumor size is required';
+      }
+      break;
+    case 'resectionMargins':
+      if (!formData.value.resectionMargins) {
+        validationErrors.value.resectionMargins = 'Resection margins status is required';
+      }
+      break;
+    case 'lymphNodesStatus':
+      if (!formData.value.lymphNodesStatus) {
+        validationErrors.value.lymphNodesStatus = 'Lymph nodes status is required';
+      }
+      break;
+  }
+};
+
+const validateForm = () => {
+  [
+    'patientName',
+    'age',
+    'condition',
+    'status',
+    'tumorSize',
+    'resectionMargins',
+    'lymphNodesStatus'
+  ].forEach(validateField);
+  return Object.keys(validationErrors.value).length === 0;
+};
+
+const isFormValid = computed(() => {
+  return formData.value.patientName &&
+    formData.value.age &&
+    formData.value.condition &&
+    formData.value.status &&
+    formData.value.tumorSize &&
+    formData.value.resectionMargins &&
+    formData.value.lymphNodesStatus &&
+    Object.keys(validationErrors.value).length === 0;
+});
 
 // Generate a new case ID if creating a new record
 onMounted(() => {
@@ -109,6 +330,10 @@ const getCurrentDate = () => {
 };
 
 const handleSubmit = async () => {
+  if (!validateForm()) {
+    return;
+  }
+
   try {
     loading.value = true;
     await props.updateAction(formData.value);
@@ -119,4 +344,10 @@ const handleSubmit = async () => {
     loading.value = false;
   }
 };
-</script> 
+</script>
+
+<style scoped>
+.form-section {
+  @apply border-b border-gray-200 pb-6 mb-6 last:border-0 last:mb-0 last:pb-0;
+}
+</style> 

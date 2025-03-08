@@ -57,14 +57,19 @@ export type DataColumn =
     };
 
 export interface DataRow {
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | string[]
-    | number[]
-    | DataRow
-    | DataRow[];
+  id: string;
+  patientName: string;
+  age: number;
+  condition: string;
+  status: string;
+  lastUpdate: string;
+  // New medical fields
+  tumorSize?: string;
+  necrosisPresent?: boolean;
+  angioinvasionPresent?: boolean;
+  perineuralInvasionPresent?: boolean;
+  resectionMargins?: 'positive' | 'negative';
+  lymphNodesStatus?: string;
 }
 
 export interface EditorConfColumns {

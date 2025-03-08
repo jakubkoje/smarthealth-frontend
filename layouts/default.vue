@@ -1,26 +1,5 @@
 <template>
   <div class="flex h-screen">
-    <!-- Side Toolbar -->
-    <div
-      class="border-primary-200 bg-primary-100 flex w-16 flex-col items-center space-y-6 border-r py-4"
-    >
-      <NuxtLink to="/" class="hover:bg-primary-200 rounded-lg p-2">
-        <UIcon name="i-lucide-home" class="text-primary-700 text-xl" />
-      </NuxtLink>
-
-      <NuxtLink to="/dashboard" class="hover:bg-primary-200 rounded-lg p-2">
-        <UIcon
-          name="i-lucide-layout-dashboard"
-          class="text-primary-700 text-xl"
-        />
-      </NuxtLink>
-
-      <NuxtLink to="/" class="hover:bg-primary-200 rounded-lg p-2">
-        <UIcon name="i-lucide-settings" class="text-primary-700 text-xl" />
-      </NuxtLink>
-
-      <div class="flex-grow"></div>
-    </div>
 
     <!-- Main Content Area -->
     <div class="flex flex-1 flex-col overflow-hidden">
@@ -34,7 +13,9 @@
               name="i-lucide-activity"
               class="text-primary-800 mr-2 text-xl"
             />
-            <h1 class="text-primary-800 text-lg font-medium">smartHealth</h1>
+            <NuxtLink to="/" class="no-underline">
+             <h1 class="text-primary-800 text-lg font-medium hover:text-primary-600 transition-colors cursor-pointer">smartHealth</h1>
+            </NuxtLink>
           </div>
         </div>
 
