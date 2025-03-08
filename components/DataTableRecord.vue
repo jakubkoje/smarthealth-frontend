@@ -351,13 +351,13 @@ const handleSubmit = async () => {
     console.log('Sending FHIR data:', JSON.stringify(fhirPatient, null, 2));
     
     // Make POST request to FHIR server
+    // http://localhost:7030/ikem_api/patients/new
     try {
-        const response = await fetch('http://localhost:8080/csp/healthshare/demo/fhir/r4/Patient', {
+        const response = await fetch('http://localhost:7030/ikem_api/patients/new', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/fhir+json;charset=UTF-8'
             },
-            mode: 'no-cors',
             body: JSON.stringify(fhirPatient)
         });
       
