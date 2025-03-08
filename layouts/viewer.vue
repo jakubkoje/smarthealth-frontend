@@ -72,28 +72,28 @@
         </UTooltip>
 
         <UTooltip
-          :text="
-            viewerStore.selectionClicked
-              ? 'Close selection'
-              : 'Select region of interest'
-          "
-        >
-          <UButton
-            :icon="
-              viewerStore.selectionClicked
-                ? 'i-lucide-x'
-                : 'i-lucide-square-dashed-mouse-pointer'
-            "
-            :class="[
-              'rounded-lg p-2',
-              viewerStore.selectionClicked
-                ? 'text-primary-200 hover:bg-primary-600'
-                : 'text-primary-700 hover:bg-primary-200',
-            ]"
-            :variant="viewerStore.selectionClicked ? 'solid' : 'ghost'"
-            @click="viewerStore.toggleSelection()"
+          ><UDropdown
+            :items="dropdownItems"
+            mode="hover"
+            :popper="{ placement: 'bottom-start' }"
           >
-          </UButton>
+            <UButton
+              :icon="
+                viewerStore.selectionClicked
+                  ? 'i-lucide-x'
+                  : 'i-lucide-square-dashed-mouse-pointer'
+              "
+              :class="[
+                'rounded-lg p-2',
+                viewerStore.selectionClicked
+                  ? 'text-primary-200 hover:bg-primary-600'
+                  : 'text-primary-700 hover:bg-primary-200',
+              ]"
+              :variant="viewerStore.selectionClicked ? 'solid' : 'ghost'"
+              @click="viewerStore.setSelection(false)"
+            >
+            </UButton>
+          </UDropdown>
         </UTooltip>
 
         <div class="flex-grow"></div>
@@ -176,6 +176,35 @@
 // No additional setup needed
 const viewerStore = useViewerStore();
 const isVisible = ref(true);
+
+const dropdownItems = [
+  [
+    {
+      label: "Rectangle",
+      icon: "i-lucide-square-dashed",
+      click: () => {
+        viewerStore.setCurrentShape("RectShape");
+        viewerStore.toggleSelection();
+      },
+    },
+    {
+      label: "Polygon",
+      icon: "i-lucide-triangle-dashed",
+      click: () => {
+        viewerStore.setCurrentShape("PolygonShape");
+        viewerStore.toggleSelection();
+      },
+    },
+    {
+      label: "Pencil",
+      icon: "i-lucide-pencil",
+      click: () => {
+        viewerStore.setCurrentShape("BrushShape");
+        viewerStore.toggleSelection();
+      },
+    },
+  ],
+];
 
 const chartData = ref({
   labels: ["Positive", "Negative"],
