@@ -12,17 +12,20 @@
   "dependencies": {
     "@nuxt/ui": "^2.21.0",
     "@pinia/nuxt": "^0.10.1",
+    "@primeuix/themes": "^1.0.0",
     "chart.js": "^4.4.8",
     "geotiff-tilesource": "^2.1.0",
     "nuxt": "^3.15.4",
     "openseadragon": "^5.0.1",
     "openseadragon-select-plugin": "^1.0.20",
+    "primevue": "^4.3.1",
     "vue": "^3.5.13",
     "vue-chartjs": "^5.3.2",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.28",
+    "@primevue/nuxt-module": "^4.3.1",
     "@types/openseadragon": "^3.0.10",
     "http-proxy-middleware": "^3.0.3",
     "prettier": "^3.5.3",

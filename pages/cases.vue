@@ -5,14 +5,14 @@
     </div>
 
     <div class="mx-auto max-w-6xl">
-      <!--<DataTable
+      <DataTable
         :columns="columns"
         :rows="rows"
         :updateAction="handleUpdate"
         :rowClickAction="handleRowClick"
         rowLink="#"
-      />-->
-      <NewTable />
+      />
+      <!--<PrimeTable />-->
     </div>
   </div>
 </template>
