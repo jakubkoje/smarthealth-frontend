@@ -1,7 +1,5 @@
 <template>
-  <ClientOnly>
-    <div ref="viewerContainer" class="h-full w-full"></div>
-  </ClientOnly>
+  <div ref="viewerContainer" class="h-full w-full"></div>
 </template>
 
 <script setup lang="ts">
@@ -14,11 +12,12 @@ const props = defineProps({
 });
 
 const viewerContainer = ref<HTMLElement | null>(null);
+const viewerStore = useViewerStore();
+
 let viewer: Viewer | null = null;
+let selection: any = null;
 
-onMounted(async () => {
-  await nextTick(); // Wait for Vue to apply refs
-
+onMounted(() => {
   if (viewerContainer.value) {
     viewer = new Viewer({
       element: viewerContainer.value,
@@ -31,16 +30,17 @@ onMounted(async () => {
       fullPageButton: "full-screen",
     });
 
-    const selection = viewer.selection({
+    selection = viewer.selection({
       onSelection: (rect, shape) => {
-        console.log("Selected area:", rect);
+        // send rect here
+        viewerStore.setRect(rect);
+        viewerStore.toggleSelectionComplete();
+        console.table(viewerStore.rect);
       },
       keep: true,
     });
-
-    selection.enable();
   } else {
-    console.error("Viewer container element is still null.");
+    console.error("Viewer container element is null.");
   }
 });
 
@@ -50,4 +50,19 @@ onBeforeUnmount(() => {
     viewer = null;
   }
 });
+
+// Watch for changes in selectionClicked from the store
+watch(
+  () => viewerStore.selectionClicked,
+  (newValue) => {
+    if (!selection) return;
+    if (newValue) {
+      selection.enable();
+    } else {
+      selection.disable();
+      viewer?.selectionHandler.clear();
+      viewerStore.toggleSelectionComplete();
+    }
+  },
+);
 </script>
