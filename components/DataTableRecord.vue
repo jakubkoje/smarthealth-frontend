@@ -115,7 +115,6 @@
           <UFormGroup 
             label="Resection Margins Status" 
             name="resectionMargins"
-            required
             :error="validationErrors.resectionMargins"
           >
             <URadio
@@ -155,22 +154,24 @@
       </UFormGroup>
 
       <!-- Form Actions -->
-      <div class="flex justify-end gap-4 pt-4">
-        <UButton
-          color="gray"
-          variant="soft"
-          @click="$emit('updated')"
-        >
-          Cancel
-        </UButton>
-        <UButton
-          type="submit"
-          color="primary"
-          :loading="loading"
-          :disabled="!isFormValid"
-        >
-          {{ existing ? 'Update' : 'Create' }}
-        </UButton>
+      <div class="flex flex-col gap-4 pt-4">
+        <p v-if="apiError" class="text-red-500 text-sm">{{ apiError }}</p>
+        <div class="flex justify-end gap-4">
+          <UButton
+            color="gray"
+            variant="soft"
+            @click="$emit('updated')"
+          >
+            Cancel
+          </UButton>
+          <UButton
+            type="submit"
+            color="primary"
+            :loading="loading"
+          >
+            {{ existing ? 'Update' : 'Create' }}
+          </UButton>
+        </div>
       </div>
     </form>
   </div>
@@ -208,6 +209,61 @@ const formData = ref<DataRow>({
 });
 
 const validationErrors = ref<Record<string, string>>({});
+const apiError = ref<string | null>(null);
+
+// Convert form data to FHIR Patient resource
+const createFhirPatientResource = () => {
+  // Split patient name into first and last
+  const nameParts = formData.value.patientName.split(' ');
+  const lastName = nameParts.length > 1 ? nameParts.pop() : '';
+  const firstName = nameParts.join(' ');
+  
+  // Create FHIR Patient resource
+  return {
+    resourceType: "Patient",
+    name: [
+      {
+        use: "official",
+        family: lastName,
+        given: [firstName]
+      }
+    ],
+    birthDate: calculateBirthDate(formData.value.age),
+    extension: [
+      {
+        url: "http://example.org/fhir/StructureDefinition/tumor-size",
+        valueString: formData.value.tumorSize
+      },
+      {
+        url: "http://example.org/fhir/StructureDefinition/necrosis-present",
+        valueBoolean: formData.value.necrosisPresent
+      },
+      {
+        url: "http://example.org/fhir/StructureDefinition/angioinvasion-present",
+        valueBoolean: formData.value.angioinvasionPresent
+      },
+      {
+        url: "http://example.org/fhir/StructureDefinition/perineural-invasion-present",
+        valueBoolean: formData.value.perineuralInvasionPresent
+      },
+      {
+        url: "http://example.org/fhir/StructureDefinition/resection-margins",
+        valueString: formData.value.resectionMargins
+      },
+      {
+        url: "http://example.org/fhir/StructureDefinition/lymph-nodes-status",
+        valueString: formData.value.lymphNodesStatus
+      }
+    ]
+  };
+};
+
+// Calculate birth date based on age
+const calculateBirthDate = (age: number) => {
+  const today = new Date();
+  const birthYear = today.getFullYear() - age;
+  return `${birthYear}-01-01`; // Default to January 1st of birth year
+};
 
 // Validation rules
 const validateField = (fieldName: string) => {
@@ -282,16 +338,66 @@ const getCurrentDate = () => {
 };
 
 const handleSubmit = async () => {
-  if (!validateForm()) {
-    return;
-  }
-
+  apiError.value = null;
+  
   try {
     loading.value = true;
+    
+    // Call the local updateAction to update the UI
     await props.updateAction(formData.value);
-    emit('updated');
+    
+    // Create FHIR resource
+    const fhirPatient = createFhirPatientResource();
+    console.log('Sending FHIR data:', JSON.stringify(fhirPatient, null, 2));
+    
+    // Make POST request to FHIR server
+    try {
+        const response = await fetch('http://localhost:8080/csp/healthshare/demo/fhir/r4/Patient', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/fhir+json;charset=UTF-8'
+            },
+            mode: 'no-cors',
+            body: JSON.stringify(fhirPatient)
+        });
+      
+      console.log('Response status:', response.status);
+      
+      const responseText = await response.text();
+      console.log('Raw response:', responseText);
+      
+      if (!response.ok) {
+        let errorMessage = 'Failed to save to FHIR server';
+        try {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.issue?.[0]?.diagnostics || errorMessage;
+        } catch (e) {
+          errorMessage = responseText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+      
+      // Parse response if it's valid JSON
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+        console.log('FHIR POST successful!', responseData);
+        console.log('Patient created with ID:', responseData.id);
+      } catch (e) {
+        console.log('Response is not valid JSON, but request was successful');
+      }
+      
+      // Close the modal
+      emit('updated');
+      
+    } catch (fetchError) {
+      console.error('Fetch error:', fetchError);
+      throw new Error(`Network error: ${fetchError.message}`);
+    }
+    
   } catch (error) {
     console.error('Error submitting form:', error);
+    apiError.value = error instanceof Error ? error.message : 'An unknown error occurred';
   } finally {
     loading.value = false;
   }

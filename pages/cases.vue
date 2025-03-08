@@ -12,6 +12,7 @@
         :rowClickAction="handleRowClick"
         rowLink="#"
       />
+      <!--<NewTable />-->
     </div>
   </div>
 </template>
