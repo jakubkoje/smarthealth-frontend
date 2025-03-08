@@ -78,6 +78,7 @@ const viewerStore = useViewerStore();
 
 let viewer: Viewer | null = null;
 let selection: any = null;
+let anno: any = null;
 
 onMounted(async () => {
   if (viewerContainer.value) {
@@ -113,10 +114,7 @@ onMounted(async () => {
     });
 
     // Initialize the Annotorious plugin
-    const anno = createOSDAnnotator(viewer);
-
-    // Load annotations in W3C WebAnnotation format
-    anno.setAnnotations(customAnnotations);
+    anno = createOSDAnnotator(viewer);
 
     anno.setStyle((annotation, state) => {
       const positiveValue = annotation.bodies.find(
@@ -160,6 +158,22 @@ watch(
       selection.disable();
       viewer?.selectionHandler.clear();
       viewerStore.setSelectionComplete(false);
+    }
+  },
+);
+
+// Watch for changes in seeAnno from the store
+watch(
+  () => viewerStore.eyeOpen,
+  (newValue) => {
+    if (newValue) {
+      // Actions to perform when seeAnno is true
+      // Load annotations in W3C WebAnnotation format
+      anno.setAnnotations(customAnnotations);
+    } else {
+      // Actions to perform when seeAnno is false
+      // Load annotations in W3C WebAnnotation format
+      anno.clearAnnotations();
     }
   },
 );
