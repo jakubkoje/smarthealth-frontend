@@ -12,6 +12,7 @@
   "dependencies": {
     "@nuxt/ui": "^2.21.0",
     "@pinia/nuxt": "^0.10.1",
+    "geotiff-tilesource": "^2.1.0",
     "nuxt": "^3.15.4",
     "openseadragon": "^5.0.1",
     "openseadragon-select-plugin": "^1.0.20",

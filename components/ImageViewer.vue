@@ -4,8 +4,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
-import { Viewer } from "openseadragon";
+import OpenSeadragon, { Viewer } from "openseadragon";
 import "openseadragon-select-plugin";
+import { enableGeoTIFFTileSource } from "geotiff-tilesource";
+
+enableGeoTIFFTileSource(OpenSeadragon);
 
 const props = defineProps({
   tileSource: String,
@@ -17,11 +20,21 @@ const viewerStore = useViewerStore();
 let viewer: Viewer | null = null;
 let selection: any = null;
 
-onMounted(() => {
+onMounted(async () => {
   if (viewerContainer.value) {
+    const tiffTileSources =
+      await OpenSeadragon.GeoTIFFTileSource.getAllTileSources(
+        props.tileSource,
+        {
+          logLatency: false,
+        },
+      );
+
     viewer = new Viewer({
       element: viewerContainer.value,
-      tileSources: props.tileSource,
+      crossOriginPolicy: "Anonymous",
+      ajaxWithCredentials: true,
+      tileSources: tiffTileSources,
       showNavigator: true,
       showNavigationControl: true,
       zoomInButton: "zoom-in",

@@ -100,41 +100,9 @@
       <Transition name="slide-in-right"
         ><div
           v-if="isVisible"
-          class="sidebar z-20 flex w-16 flex-col items-center space-y-6 border-r border-primary-200 bg-primary-100 py-4"
+          class="sidebar z-20 flex w-fit flex-col items-center space-y-6 border-l border-l-primary-200 bg-primary-50 px-2 py-4"
         >
-          <NuxtLink to="/" class="rounded-lg p-2 hover:bg-primary-200">
-            <UIcon name="i-lucide-home" class="text-xl text-primary-700" />
-          </NuxtLink>
-
-          <UTooltip
-            v-for="item in tools"
-            :text="item.tooltipText"
-            :shortcuts="item.tooltipShortcuts"
-          >
-            <UButton
-              class="rounded-lg p-2 hover:bg-primary-200"
-              :icon="item.iconName"
-              variant="ghost"
-              :id="item.id"
-            >
-            </UButton>
-          </UTooltip>
-
-          <UTooltip
-            :text="
-              viewerStore.selectionClicked
-                ? 'Close selection'
-                : 'Select region of interest'
-            "
-          >
-            <UButton
-              icon="i-lucide-square-dashed-mouse-pointer"
-              class="rounded-lg p-2 hover:bg-primary-200"
-              :variant="viewerStore.selectionClicked ? 'solid' : 'ghost'"
-              @click="viewerStore.toggleSelection()"
-            >
-            </UButton>
-          </UTooltip>
+          <p>Statistics</p>
 
           <div class="flex-grow"></div>
         </div>
@@ -146,7 +114,7 @@
 <script setup lang="ts">
 // No additional setup needed
 const viewerStore = useViewerStore();
-const isVisible = ref(false);
+const isVisible = ref(true);
 
 const tools = [
   {
