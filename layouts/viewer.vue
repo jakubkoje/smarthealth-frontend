@@ -17,7 +17,7 @@
           class="hover:bg-primary-200 rounded-lg p-2"
           :icon="item.iconName"
           variant="ghost"
-          tooltip="xx"
+          :id="item.id"
         >
         </UButton>
       </UTooltip>
@@ -68,37 +68,46 @@
 
 <script setup lang="ts">
 // No additional setup needed
+import { useViewerStore } from "~/stores/viewer";
+
+const viewerStore = useViewerStore();
 
 const tools = [
   {
-    to: "",
-    iconName: "i-lucide-rotate-cw",
-    tooltipText: "Rotate image",
-    tooltipShortcuts: ["⌘", "O"],
+    iconName: "i-lucide-zoom-in",
+    tooltipText: "Zoom In",
+    tooltipShortcuts: [],
+    id: "zoom-in",
   },
   {
-    to: "",
+    iconName: "i-lucide-zoom-out",
+    tooltipText: "Zoom Out",
+    tooltipShortcuts: [],
+    id: "zoom-out",
+  },
+  {
     iconName: "i-lucide-camera",
     tooltipText: "Snapshot area",
-    tooltipShortcuts: ["⌘", "O"],
+    tooltipShortcuts: [],
+    id: "",
   },
   {
-    to: "",
     iconName: "i-lucide-expand",
     tooltipText: "Full Screen",
-    tooltipShortcuts: ["⌘", "O"],
+    tooltipShortcuts: [],
+    id: "full-screen",
   },
   {
     to: "",
     iconName: "i-lucide-square-dashed-mouse-pointer",
     tooltipText: "Select area for analysis",
-    tooltipShortcuts: ["⌘", "O"],
+    tooltipShortcuts: [],
   },
   {
     to: "",
     iconName: "i-lucide-message-circle-question",
     tooltipText: "Chat with AI",
-    tooltipShortcuts: ["⌘", "O"],
+    tooltipShortcuts: [],
   },
 ];
 </script>
