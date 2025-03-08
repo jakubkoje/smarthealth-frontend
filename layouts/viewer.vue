@@ -22,6 +22,10 @@
         </UButton>
       </UTooltip>
 
+      <UButton class="hover:bg-primary-200 rounded-lg p-2" variant="ghost">
+        Area
+      </UButton>
+
       <div class="flex-grow"></div>
     </div>
 
@@ -68,9 +72,6 @@
 
 <script setup lang="ts">
 // No additional setup needed
-import { useViewerStore } from "~/stores/viewer";
-
-const viewerStore = useViewerStore();
 
 const tools = [
   {

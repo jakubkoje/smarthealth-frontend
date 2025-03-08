@@ -1,5 +1,9 @@
 <template>
-  <ClientOnly><ImageViewer></ImageViewer></ClientOnly>
+  <ClientOnly
+    ><ImageViewer
+      tileSource="https://openseadragon.github.io/example-images/highsmith/highsmith.dzi"
+    ></ImageViewer
+  ></ClientOnly>
 </template>
 
 <script setup lang="ts">
