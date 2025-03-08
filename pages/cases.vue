@@ -43,20 +43,6 @@ const columns: DataColumn[] = [
     inputType: "number",
   },
   {
-    name: "condition",
-    label: "Condition",
-    widthPercentage: 20,
-    dataType: "string",
-    inputType: "text",
-  },
-  {
-    name: "status",
-    label: "Status",
-    widthPercentage: 15,
-    dataType: "string",
-    inputType: "text",
-  },
-  {
     name: "lastUpdate",
     label: "Last Update",
     widthPercentage: 15,

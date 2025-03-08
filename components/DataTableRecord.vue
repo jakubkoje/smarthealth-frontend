@@ -48,35 +48,6 @@
               @blur="validateField('age')"
             />
           </UFormGroup>
-
-          <!-- Condition Field -->
-          <UFormGroup 
-            label="Condition" 
-            name="condition" 
-            required
-            :error="validationErrors.condition"
-          >
-            <UInput
-              v-model="formData.condition"
-              placeholder="Enter medical condition"
-              @blur="validateField('condition')"
-            />
-          </UFormGroup>
-
-          <!-- Status Field -->
-          <UFormGroup 
-            label="Status" 
-            name="status" 
-            required
-            :error="validationErrors.status"
-          >
-            <USelect
-              v-model="formData.status"
-              :options="['Active', 'Pending', 'Completed']"
-              placeholder="Select status"
-              @blur="validateField('status')"
-            />
-          </UFormGroup>
         </div>
       </div>
 
@@ -116,7 +87,6 @@
           <UFormGroup 
             label="Angioinvasion Present" 
             name="angioinvasionPresent"
-            help="Invasion into blood vessels"
           >
             <URadio
               v-model="formData.angioinvasionPresent"
@@ -131,7 +101,6 @@
           <UFormGroup 
             label="Perineural Invasion Present" 
             name="perineuralInvasionPresent"
-            help="Invasion around nerves"
           >
             <URadio
               v-model="formData.perineuralInvasionPresent"
@@ -146,7 +115,6 @@
           <UFormGroup 
             label="Resection Margins Status" 
             name="resectionMargins"
-            help="Was the tumor completely removed?"
             required
             :error="validationErrors.resectionMargins"
           >
@@ -228,8 +196,6 @@ const formData = ref<DataRow>({
     id: '',
     patientName: '',
     age: 0,
-    condition: '',
-    status: '',
     lastUpdate: '',
     tumorSize: '',
     necrosisPresent: false,
@@ -260,16 +226,6 @@ const validateField = (fieldName: string) => {
         validationErrors.value.age = 'Age must be between 0 and 150';
       }
       break;
-    case 'condition':
-      if (!formData.value.condition) {
-        validationErrors.value.condition = 'Condition is required';
-      }
-      break;
-    case 'status':
-      if (!formData.value.status) {
-        validationErrors.value.status = 'Status is required';
-      }
-      break;
     case 'tumorSize':
       if (!formData.value.tumorSize) {
         validationErrors.value.tumorSize = 'Tumor size is required';
@@ -292,8 +248,6 @@ const validateForm = () => {
   [
     'patientName',
     'age',
-    'condition',
-    'status',
     'tumorSize',
     'resectionMargins',
     'lymphNodesStatus'
@@ -304,8 +258,6 @@ const validateForm = () => {
 const isFormValid = computed(() => {
   return formData.value.patientName &&
     formData.value.age &&
-    formData.value.condition &&
-    formData.value.status &&
     formData.value.tumorSize &&
     formData.value.resectionMargins &&
     formData.value.lymphNodesStatus &&
