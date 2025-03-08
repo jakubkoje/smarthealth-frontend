@@ -4,6 +4,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
   modules: ["@nuxt/ui", "@nuxtjs/tailwindcss", "@pinia/nuxt"],
+  routeRules: {
+    "/viewer": { ssr: false },
+    // Add other routes as needed
+  },
   /*security: {
     headers: {
       contentSecurityPolicy: {}
