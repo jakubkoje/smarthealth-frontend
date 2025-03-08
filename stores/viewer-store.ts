@@ -5,6 +5,7 @@ export const useViewerStore = defineStore("viewer", () => {
   // ✅ State
   const selectionClicked = ref(false);
   const selectionComplete = ref(false);
+  const eyeOpen = ref(false);
   const rect = ref<object | null>(null);
 
   // ✅ Getters (computed properties)
@@ -18,8 +19,16 @@ export const useViewerStore = defineStore("viewer", () => {
     selectionClicked.value = !selectionClicked.value;
   }
 
+  function toggleEyeOpen() {
+    eyeOpen.value = !eyeOpen.value;
+  }
+
   function setSelectionComplete(val: boolean) {
     selectionComplete.value = val;
+  }
+
+  function setEyeOpen(val: boolean) {
+    eyeOpen.value = val;
   }
 
   function setRect(newRect: object) {
@@ -32,13 +41,16 @@ export const useViewerStore = defineStore("viewer", () => {
     selectionClicked,
     selectionComplete,
     rect,
+    eyeOpen,
 
     /** GETTERS */
 
     /** ACTIONS */
     setSelection,
     toggleSelection,
+    toggleEyeOpen,
     setSelectionComplete,
+    setEyeOpen,
     setRect,
   };
 });
