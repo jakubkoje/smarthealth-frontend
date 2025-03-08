@@ -102,7 +102,7 @@
       <!-- Main Content Area -->
       <div class="r m-2 flex flex-1 flex-col overflow-hidden">
         <!-- Page Content -->
-        <main class="relative flex-1 overflow-auto bg-white">
+        <main class="relative flex-1 overflow-auto bg-primary-900">
           <slot></slot>
           <!-- Selection Info -->
           <Transition name="slide-up">
