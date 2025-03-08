@@ -34,7 +34,7 @@ onMounted(() => {
       onSelection: (rect, shape) => {
         // send rect here
         viewerStore.setRect(rect);
-        viewerStore.toggleSelectionComplete();
+        viewerStore.setSelectionComplete(true);
         console.table(viewerStore.rect);
       },
       keep: true,
@@ -61,7 +61,7 @@ watch(
     } else {
       selection.disable();
       viewer?.selectionHandler.clear();
-      viewerStore.toggleSelectionComplete();
+      viewerStore.setSelectionComplete(false);
     }
   },
 );

@@ -18,8 +18,8 @@ export const useViewerStore = defineStore("viewer", () => {
     selectionClicked.value = !selectionClicked.value;
   }
 
-  function toggleSelectionComplete() {
-    selectionComplete.value = !selectionComplete.value;
+  function setSelectionComplete(val: boolean) {
+    selectionComplete.value = val;
   }
 
   function setRect(newRect: object) {
@@ -38,7 +38,7 @@ export const useViewerStore = defineStore("viewer", () => {
     /** ACTIONS */
     setSelection,
     toggleSelection,
-    toggleSelectionComplete,
+    setSelectionComplete,
     setRect,
   };
 });
