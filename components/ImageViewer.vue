@@ -6,53 +6,66 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import OpenSeadragon, { Viewer } from "openseadragon";
 import "openseadragon-select-plugin";
+import { ShapeNames } from "openseadragon-select-plugin";
 import { enableGeoTIFFTileSource } from "geotiff-tilesource";
+import { createOSDAnnotator } from "@annotorious/openseadragon";
+// Import essential CSS styles
+import "@annotorious/openseadragon/annotorious-openseadragon.css";
 
-const sampleGeoJSON = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [102.0, 0.5] },
-      properties: { prop0: "value0" },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [102.0, 0.0],
-          [103.0, 1.0],
-          [104.0, 0.0],
-          [105.0, 1.0],
-        ],
+const customAnnotations = [
+  {
+    id: "64d7dda8-c156-4e1e-a4f9-55192399208b",
+    bodies: [
+      {
+        positive: "yes",
       },
-      properties: {
-        prop0: "value0",
-        prop1: 0.0,
+    ],
+    target: {
+      selector: {
+        type: "RECTANGLE",
+        geometry: {
+          bounds: {
+            minX: 272,
+            minY: 169,
+            maxX: 393,
+            maxY: 259,
+          },
+          x: 272,
+          y: 169,
+          w: 121,
+          h: 90,
+        },
       },
     },
-    {
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [
-          [
-            [100.0, 0.0],
-            [101.0, 0.0],
-            [101.0, 1.0],
-            [100.0, 1.0],
-            [100.0, 0.0],
+  },
+  {
+    id: "99d7dda8-c156-4e1e-a4f9-55192399208b",
+    bodies: [
+      {
+        positive: "no",
+      },
+    ],
+    target: {
+      selector: {
+        type: "POLYGON",
+        geometry: {
+          bounds: {
+            minX: 60,
+            minY: 88,
+            maxX: 248,
+            maxY: 223,
+          },
+          points: [
+            [60, 221],
+            [136, 88],
+            [248, 148],
+            [172, 223],
           ],
-        ],
-      },
-      properties: {
-        prop0: "value0",
-        prop1: { this: "that" },
+        },
       },
     },
-  ],
-};
+  },
+];
 
 enableGeoTIFFTileSource(OpenSeadragon);
 
@@ -98,7 +111,30 @@ onMounted(async () => {
       },
       keep: true,
     });
+
+    // Initialize the Annotorious plugin
+    const anno = createOSDAnnotator(viewer);
+
+    // Load annotations in W3C WebAnnotation format
+    anno.setAnnotations(customAnnotations);
+
+    anno.setStyle((annotation, state) => {
+      const positiveValue = annotation.bodies.find(
+        (body) => body.positive,
+      )?.positive;
+
+      // Determine the color based on the 'positive' value
+      const color = positiveValue === "yes" ? "#ff0000" : "#00ff00";
+
+      return {
+        fill: color,
+        stroke: color,
+        opacity: 0.2,
+        strokeOpacity: 1,
+      };
+    });
   } else {
+    console.log("Error");
     console.error("Viewer container element is null.");
   }
 });
@@ -117,6 +153,9 @@ watch(
     if (!selection) return;
     if (newValue) {
       selection.enable();
+      viewer.selectionHandler.frontCanvas.drawer.drawerActiveShape =
+        viewerStore.currentShape;
+      console.log(viewer.selectionHandler.frontCanvas.drawer.drawerActiveShape);
     } else {
       selection.disable();
       viewer?.selectionHandler.clear();
