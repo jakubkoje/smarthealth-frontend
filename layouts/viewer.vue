@@ -37,7 +37,7 @@
               name="i-lucide-activity"
               class="text-primary-800 mr-2 text-xl"
             />
-            <h1 class="text-primary-800 text-lg font-medium">smartHealth</h1>
+             <a href="/" class="text-primary-800 text-lg font-medium hover:text-primary-600 transition-colors cursor-pointer">smartHealth</a>
           </div>
         </div>
 
