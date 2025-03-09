@@ -3,6 +3,55 @@
     
     <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
       <div class="flex flex-col gap-8">
+        <div class="bg-blue-50 rounded-lg p-6 border border-blue-100">
+          <h2 class="text-xl font-medium text-blue-800 mb-4 flex items-center">
+            <UIcon name="i-lucide-tools" class="mr-2" />
+            Available Tools
+          </h2>
+          
+          <p class="text-gray-700 mb-6">
+            Select the tool that best fits your current workflow needs.
+          </p>
+          
+          <div class="flex flex-wrap justify-center gap-8">
+            <NuxtLink to="/cases" class="no-underline">
+              <UCard
+                class="w-32 h-32 cursor-pointer hover:shadow-lg transition-all hover:translate-y-[-4px] border border-blue-100"
+              >
+                <div class="flex flex-col items-center justify-between h-full p-6">
+                  <div class="w-28 h-28 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <UIcon name="i-lucide-heart-pulse" class="text-blue-500 text-4xl" />
+                  </div>
+                  <div class="text-center mt-4">
+                    <h3 class="font-medium text-gray-800 text-lg mb-2">Cases</h3>
+                    <p class="text-sm text-gray-600">
+                      Upload and manage your medical case files
+                    </p>
+                  </div>
+                </div>
+              </UCard>
+            </NuxtLink>
+            
+            <NuxtLink to="/viewer" class="no-underline">
+              <UCard
+                class="w-32 h-32 cursor-pointer hover:shadow-lg transition-all hover:translate-y-[-4px] border border-blue-100"
+              >
+                <div class="flex flex-col items-center justify-between h-full p-6">
+                  <div class="w-28 h-28 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <UIcon name="i-lucide-stethoscope" class="text-purple-500 text-4xl" />
+                  </div>
+                  <div class="text-center mt-4">
+                    <h3 class="font-medium text-gray-800 text-lg mb-2">Viewer</h3>
+                    <p class="text-sm text-gray-600">
+                      Analyze and process medical images
+                    </p>
+                  </div>
+                </div>
+              </UCard>
+            </NuxtLink>
+          </div>
+        </div>
+
         <!-- New Doctor Overview Section -->
         <div class="bg-blue-50 rounded-lg p-6 border border-blue-100">
           <h2 class="text-xl font-medium text-blue-800 mb-4 flex items-center">
@@ -73,38 +122,6 @@
                 </li>
               </ol>
             </div>
-          </div>
-        </div>
-        
-        <div>
-          <h2 class="text-xl font-medium text-center text-gray-800 mb-4">Tools</h2>
-          
-          <div class="flex justify-center gap-4">
-            <NuxtLink to="/cases" class="no-underline">
-              <UCard
-                class="w-40 cursor-pointer hover:shadow-lg transition-shadow"
-              >
-                <div class="flex flex-col items-center">
-                  <div class="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
-                    <UIcon name="i-lucide-heart-pulse" class="text-blue-500 text-2xl" />
-                  </div>
-                  <span class="text-sm text-gray-700">Cases</span>
-                </div>
-              </UCard>
-            </NuxtLink>
-            
-            <NuxtLink to="/viewer" class="no-underline">
-              <UCard
-                class="w-40 cursor-pointer hover:shadow-lg transition-shadow"
-              >
-                <div class="flex flex-col items-center">
-                  <div class="w-20 h-20 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
-                    <UIcon name="i-lucide-stethoscope" class="text-purple-500 text-2xl" />
-                  </div>
-                  <span class="text-sm text-gray-700">Viewer</span>
-                </div>
-              </UCard>
-            </NuxtLink>
           </div>
         </div>
       </div>
