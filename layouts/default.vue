@@ -14,7 +14,7 @@
               class="text-primary-800 mr-2 text-xl"
             />
             <NuxtLink to="/" class="no-underline">
-             <h1 class="text-primary-800 text-lg font-medium hover:text-primary-600 transition-colors cursor-pointer">smartHealth</h1>
+             <h1 class="text-primary-800 text-lg font-medium hover:text-primary-600 transition-colors cursor-pointer">KiNET</h1>
             </NuxtLink>
           </div>
         </div>
