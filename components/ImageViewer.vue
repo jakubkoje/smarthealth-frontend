@@ -12,61 +12,6 @@ import { createOSDAnnotator } from "@annotorious/openseadragon";
 // Import essential CSS styles
 import "@annotorious/openseadragon/annotorious-openseadragon.css";
 
-const customAnnotations = [
-  {
-    id: "64d7dda8-c156-4e1e-a4f9-55192399208b",
-    bodies: [
-      {
-        positive: "yes",
-      },
-    ],
-    target: {
-      selector: {
-        type: "RECTANGLE",
-        geometry: {
-          bounds: {
-            minX: 272,
-            minY: 169,
-            maxX: 393,
-            maxY: 259,
-          },
-          x: 272,
-          y: 169,
-          w: 121,
-          h: 90,
-        },
-      },
-    },
-  },
-  {
-    id: "99d7dda8-c156-4e1e-a4f9-55192399208b",
-    bodies: [
-      {
-        positive: "no",
-      },
-    ],
-    target: {
-      selector: {
-        type: "POLYGON",
-        geometry: {
-          bounds: {
-            minX: 60,
-            minY: 88,
-            maxX: 248,
-            maxY: 223,
-          },
-          points: [
-            [60, 221],
-            [136, 88],
-            [248, 148],
-            [172, 223],
-          ],
-        },
-      },
-    },
-  },
-];
-
 enableGeoTIFFTileSource(OpenSeadragon);
 
 const props = defineProps({
@@ -94,7 +39,12 @@ onMounted(async () => {
       element: viewerContainer.value,
       crossOriginPolicy: "Anonymous",
       ajaxWithCredentials: true,
-      tileSources: tiffTileSources,
+      tileSources: {
+        type: "image",
+        url: "http://0.0.0.0:7030/ikem_api/images/view/cropped.png",
+        crossOriginPolicy: "Anonymous",
+        ajaxWithCredentials: false,
+      },
       showNavigator: true,
       showNavigationControl: true,
       zoomInButton: "zoom-in",
@@ -169,7 +119,7 @@ watch(
     if (newValue) {
       // Actions to perform when seeAnno is true
       // Load annotations in W3C WebAnnotation format
-      anno.setAnnotations(customAnnotations);
+      anno.setAnnotations(viewerStore.annotations);
     } else {
       // Actions to perform when seeAnno is false
       // Load annotations in W3C WebAnnotation format

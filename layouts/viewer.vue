@@ -112,7 +112,7 @@
               v-if="viewerStore.selectionComplete"
               class="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center border-t border-t-primary-400 bg-primary-200 bg-opacity-80 p-4 shadow-lg"
             >
-              <UButton class="" @click="isVisible = true"
+              <UButton class="" @click="processPatch"
                 >Process patch</UButton
               >
             </div>
@@ -182,7 +182,7 @@
             </table>
           </div>
 
-          <div class="aspect-square h-64 w-64">
+          <div class="aspect-square h-48 w-48">
             <p class="text-center text-primary-800">Cell Percentage</p>
             <PieChartComponent
               :chartData="chartData"
@@ -384,7 +384,159 @@ const tools = [
   },
 ];
 
+const processPatch = async () => {
+  // Call the predict_patch endpoint with the selected rectangle coordinates
+  const response = await useFetch('http://0.0.0.0:7030/ikem_api/predict_patch', {
+    method: 'POST',
+    body: {
+      rect: viewerStore.rect
+    }
+  });
+
+  if (response.error.value) {
+    console.error('Error predicting patch:', response.error.value);
+    return;
+  }
+
+  console.log('Prediction response:', response.data.value);
+
+  // Store task ID
+  const taskId = response.data.value.task_id;
+  
+  // Create interval for polling and store the interval ID so we can clear it later
+  const statusInterval = setInterval(async () => {
+    try {
+      const statusResponse = await useFetch(`http://0.0.0.0:7030/ikem_api/get_status/${taskId}`, {
+        method: 'GET'
+      });
+
+      if (statusResponse.error.value) {
+        console.error('Error checking task status:', statusResponse.error.value);
+        clearInterval(statusInterval); // Stop polling on error
+        return;
+      }
+
+      console.log('Task status response:', statusResponse.data.value);
+      const status = statusResponse.data.value.status.toLowerCase();
+      console.log('Task status:', status);
+
+      if (status === 'success' || status === 'completed') {
+        console.log('Prediction completed:', statusResponse.data.value);
+        
+        // Update UI with results
+        if (statusResponse.data.value.result) {
+          const result = statusResponse.data.value.result;
+          // Update chart data and table data with the results
+          updateResultsDisplay(result);
+        }
+        
+        // Stop polling once completed
+        clearInterval(statusInterval);
+        
+        // Show the statistics sidebar
+        isVisible.value = true;
+      } else if (status === 'failed') {
+        console.error('Task failed:', statusResponse.data.value.error);
+        clearInterval(statusInterval); // Stop polling on failure
+      }
+      // Continue polling for 'pending' or 'processing' status
+    } catch (error) {
+      console.error('Exception during status check:', error);
+      clearInterval(statusInterval);
+    }
+  }, 1000); // Poll every second
+}
+
+// Function to update the UI with prediction results
+const updateResultsDisplay = (result: any) => {
+  // Update chart data
+  chartData.value = {
+    labels: ["Positive", "Negative"],
+    datasets: [
+      {
+        label: "Percentage",
+        data: [result.statistics.positive_cells, result.statistics.negative_cells],
+        backgroundColor: ["#FF6384", "#36A2EB"],
+      },
+    ],
+  };
+
+  // Update table data
+  tableData.value = [
+    { category: "Positive Number", value: result.statistics.positive_cells.toString() },
+    { category: "Negative Number", value: result.statistics.negative_cells.toString() },
+    { category: "Total", value: result.statistics.total_cells.toString() },
+    { category: "Ki-67 index", value: result.statistics.percentage.toFixed(2) },
+    { category: "Grade", value: result.statistics.grading.toString() },
+  ];
+
+  console.log('Table data:', result.geojson);
+  viewerStore.setAnnotations(convertGeoJSONToAnnotations(result.geojson));
+  viewerStore.setEyeOpen(true);
+}
+
 const messages = ref([]);
+
+// Function to convert GeoJSON to custom annotation format
+function convertGeoJSONToAnnotations(geoJSON: any) {
+  if (typeof geoJSON === 'string') {
+    geoJSON = JSON.parse(geoJSON);
+  }
+  
+  return geoJSON.features.map(feature => {
+    // Generate a random UUID for the annotation ID
+    const id = crypto.randomUUID();
+    
+    // Determine if positive or negative based on classification name
+    const isPositive = feature.properties.classification.name === "positive";
+    
+    // Extract coordinates from the GeoJSON
+    const coordinates = feature.geometry.coordinates[0];
+    
+    // Calculate bounds
+    const xCoords = coordinates.map(point => point[0]);
+    const yCoords = coordinates.map(point => point[1]);
+    
+    const minX = Math.min(...xCoords);
+    const maxX = Math.max(...xCoords);
+    const minY = Math.min(...yCoords);
+    const maxY = Math.max(...yCoords);
+    
+    // Format points for polygon
+    const points = coordinates.map(point => [point[0], point[1]]);
+    
+    return {
+      id: feature.id || id,
+      bodies: [
+        {
+          positive: isPositive ? "yes" : "no",
+        },
+      ],
+      target: {
+        selector: {
+          type: feature.geometry.type.toUpperCase(),
+          geometry: {
+            bounds: {
+              minX,
+              minY,
+              maxX,
+              maxY,
+            },
+            // For polygons, include points
+            ...(feature.geometry.type.toUpperCase() === "POLYGON" && { points }),
+            // For rectangles, include x, y, w, h
+            ...(feature.geometry.type.toUpperCase() === "RECTANGLE" && {
+              x: minX,
+              y: minY,
+              w: maxX - minX,
+              h: maxY - minY,
+            }),
+          },
+        },
+      },
+    };
+  });
+}
 
 const handleNewMessage = (message) => {
   messages.value.push({

@@ -8,6 +8,7 @@ export const useViewerStore = defineStore("viewer", () => {
   const eyeOpen = ref(false);
   const rect = ref<object | null>(null);
   const currentShape = ref("RectShape");
+  const annotations = ref<object[] | null>(null);
 
   // ✅ Getters (computed properties)
 
@@ -40,6 +41,10 @@ export const useViewerStore = defineStore("viewer", () => {
     currentShape.value = val;
   }
 
+  function setAnnotations(val: object[]) {
+    annotations.value = val;
+  }
+
   // ✅ Expose State, Getters, and Actions
   return {
     /** STATE */
@@ -48,7 +53,7 @@ export const useViewerStore = defineStore("viewer", () => {
     rect,
     eyeOpen,
     currentShape,
-
+    annotations,
     /** GETTERS */
 
     /** ACTIONS */
@@ -59,5 +64,6 @@ export const useViewerStore = defineStore("viewer", () => {
     setEyeOpen,
     setRect,
     setCurrentShape,
+    setAnnotations,
   };
 });
