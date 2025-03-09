@@ -5,7 +5,6 @@
       <div class="flex flex-col gap-8">
         <div class="bg-blue-50 rounded-lg p-6 border border-blue-100">
           <h2 class="text-xl font-medium text-blue-800 mb-4 flex items-center">
-            <UIcon name="i-lucide-tools" class="mr-2" />
             Available Tools
           </h2>
           
@@ -61,7 +60,7 @@
           
           <div class="space-y-4">
             <p class="text-gray-700">
-              KiNET Analyzer is a specialized tool designed to assist pathologists and oncologists in analyzing Ki-67 immunohistochemical stains for breast cancer assessment.
+              KiNET Analyzer is a specialized tool designed to assist pathologists and oncologists in analyzing Ki-67 immunohistochemical stains.
             </p>
             
             <div class="flex flex-row md:flex-row gap-4 mt-4 overflow-x-auto pb-2">
