@@ -47,9 +47,11 @@
         >
           <UButton
             class="rounded-lg p-2 text-primary-700 hover:bg-primary-200"
+            :class="{ 'bg-primary-300': item.id === 'chat-ai' && isChatOpen }"
             :icon="item.iconName"
             variant="ghost"
             :id="item.id"
+            @click="item.id === 'chat-ai' ? toggleChat() : null"
           >
           </UButton>
         </UTooltip>
@@ -165,17 +167,108 @@
           <div class="flex-grow"></div>
         </div>
       </Transition>
-
-      <!-- Chat -->
-      <Transition name="slide-in-right"><div></div></Transition>
     </div>
+    
+    <!-- Chat Interface (Slides in from right) -->
+    <Transition name="slide-in-right">
+      <div v-if="isChatOpen" class="chat-container fixed top-4 bottom-4 right-4 w-96 max-w-[calc(100vw-2rem)] rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden z-40">
+        
+        <!-- Chat input component -->
+        <div class="p-2 border-t border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-2 mb-2">
+            
+            <!-- Send message input -->
+            <div class="flex-grow flex gap-2">
+              <UTextarea
+                v-model="newMessage"
+                placeholder="Type a message..."
+                :rows="1"
+                :ui="{
+                  base: 'relative block w-full disabled:cursor-not-allowed disabled:opacity-75 focus:outline-none',
+                  rounded: 'rounded-md',
+                  size: 'sm:text-sm',
+                  shadow: 'shadow-sm',
+                  padding: 'py-2 px-3',
+                  ring: 'focus:ring-2 focus:ring-primary-500 focus:ring-offset-1',
+                  background: 'bg-white dark:bg-gray-800',
+                  placeholder: 'placeholder-gray-400 dark:placeholder-gray-500',
+                }"
+                class="flex-grow"
+                @keydown.enter.prevent="sendMessage"
+              />
+              <UButton
+                color="primary"
+                icon="i-heroicons-paper-airplane"
+                aria-label="Send message"
+                :disabled="!newMessage.trim()"
+                @click="sendMessage"
+              />
+            </div>
+          </div>
+          
+          
+        </div>
+
+        <!-- Chat messages display area -->
+        <div class="messages-container p-4 overflow-y-auto" ref="messagesContainer">
+          <template v-if="messages.length > 0">
+            <div 
+              v-for="(message, index) in messages" 
+              :key="index"
+              :class="[
+                'mb-4 max-w-3/4',
+                message.isUser ? 'ml-auto' : 'mr-auto'
+              ]"
+            >
+              <UCard
+                :ui="{
+                  base: 'overflow-hidden',
+                  ring: '',
+                  divide: 'divide-y divide-gray-200 dark:divide-gray-700',
+                  background: message.isUser ? 'bg-primary-50 dark:bg-primary-900/20' : 'bg-gray-50 dark:bg-gray-800',
+                  rounded: 'rounded-lg',
+                  shadow: 'shadow-sm',
+                  body: {
+                    base: 'text-gray-700 dark:text-gray-200',
+                    padding: 'px-4 py-3'
+                  }
+                }"
+              >
+                <div class="message-content">
+                  {{ message.text }}
+                </div>
+                
+                <template #footer>
+                  <div class="flex justify-between items-center px-4 py-2 text-xs text-gray-500">
+                    <span>{{ formatTime(message.timestamp) }}</span>
+                    <div v-if="message.isUser" class="flex items-center">
+                      <UIcon 
+                        :name="message.status === 'sent' ? 'i-heroicons-check' : 'i-heroicons-clock'" 
+                        class="w-4 h-4"
+                      />
+                    </div>
+                  </div>
+                </template>
+              </UCard>
+            </div>
+          </template>
+          
+          <div v-else class="flex flex-col items-center justify-center h-64">
+            <UIcon name="i-heroicons-chat-bubble-left-right" class="w-12 h-12 text-gray-300 mb-2" />
+            <p class="text-gray-500">No messages yet</p>
+            <p class="text-sm text-gray-400">Start a conversation</p>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-// No additional setup needed
+import { ref, onMounted, nextTick } from 'vue';
+
 const viewerStore = useViewerStore();
-const isVisible = ref(true);
+const isVisible = ref(false);
 
 const dropdownItems = [
   [
@@ -255,12 +348,123 @@ const tools = [
     id: "full-screen",
   },
   {
-    to: "",
     iconName: "i-lucide-message-circle-question",
     tooltipText: "Chat with AI",
     tooltipShortcuts: [],
+    id: "chat-ai",
   },
 ];
+
+const messages = ref([]);
+
+const handleNewMessage = (message) => {
+  messages.value.push({
+    id: Date.now(),
+    text: message,
+    sender: 'user',
+    timestamp: new Date()
+  });
+  
+  // Here you would typically handle the message,
+  // perhaps sending it to an API and then displaying a response
+};
+
+// State for the chat visibility
+const isChatOpen = ref(false);
+
+// State for the collapsible menu
+const isMenuOpen = ref(false);
+
+// State for the new message input
+const newMessage = ref('');
+
+// Reference to the messages container for scrolling
+const messagesContainer = ref(null);
+
+// Toggle chat visibility
+const toggleChat = () => {
+  isChatOpen.value = !isChatOpen.value;
+  
+  // If opening the chat, scroll to the bottom of messages
+  if (isChatOpen.value) {
+    nextTick(() => {
+      scrollToBottom();
+    });
+  }
+};
+
+// Function to send a new message
+const sendMessage = () => {
+  if (!newMessage.value.trim()) return;
+  
+  // Add user message
+  messages.value.push({
+    id: Date.now(),
+    text: newMessage.value,
+    timestamp: new Date(),
+    isUser: true,
+    status: 'sent'
+  });
+  
+  // Clear input
+  newMessage.value = '';
+  
+  // Scroll to bottom
+  nextTick(() => {
+    scrollToBottom();
+  });
+  
+  // Simulate AI response (you would typically call your API here)
+  setTimeout(() => {
+    messages.value.push({
+      id: Date.now() + 1,
+      text: "I'm processing your request. I'll get back to you shortly.",
+      timestamp: new Date(),
+      isUser: false,
+      status: 'sent'
+    });
+    
+    // Scroll to bottom again after AI response
+    nextTick(() => {
+      scrollToBottom();
+    });
+  }, 1000);
+};
+
+// Function to scroll to the bottom of the messages container
+const scrollToBottom = () => {
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  }
+};
+
+// Function to format timestamp
+const formatTime = (timestamp) => {
+  return new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  }).format(timestamp);
+};
+
+// Function to insert template text
+const insertTemplate = (text) => {
+  newMessage.value = text;
+  // Focus the textarea
+  nextTick(() => {
+    const textarea = document.querySelector('textarea');
+    if (textarea) {
+      textarea.focus();
+    }
+  });
+};
+
+// Scroll to bottom on initial mount if chat is open
+onMounted(() => {
+  if (isChatOpen.value) {
+    scrollToBottom();
+  }
+});
 </script>
 
 <style scoped>
@@ -300,5 +504,35 @@ const tools = [
 
 .slide-in-right-leave-to {
   transform: translateX(100%);
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+/* Animation for the collapse transition */
+.collapse-enter-active,
+.collapse-leave-active {
+  transition: all 0.3s ease-out;
+  overflow: hidden;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+.collapse-enter-to,
+.collapse-leave-from {
+  max-height: 500px;
+  opacity: 1;
 }
 </style>
