@@ -92,7 +92,7 @@
                   : 'text-primary-700 hover:bg-primary-200',
               ]"
               :variant="viewerStore.selectionClicked ? 'solid' : 'ghost'"
-              @click="viewerStore.setSelection(false)"
+              @click="handleSelectionCancel"
             >
             </UButton>
           </UDropdown>
@@ -669,6 +669,17 @@ onMounted(() => {
     scrollToBottom();
   }
 });
+
+// Add this function to handle selection cancellation
+const handleSelectionCancel = () => {
+  // Call the original function to cancel selection
+  viewerStore.setSelection(false);
+  
+  // Reset the process patch button state
+  isProcessing.value = false;
+  isProcessed.value = false;
+  buttonText.value = "Process patch";
+};
 </script>
 
 <style scoped>
