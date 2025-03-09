@@ -125,9 +125,35 @@
         <!-- Statisics -->
         <div
           v-if="isVisible"
-          class="sidebar z-20 flex w-fit max-w-80 flex-col items-center gap-8 space-y-6 border-l border-l-primary-400 bg-primary-200 p-4"
+          class="sidebar z-20 flex w-fit max-w-80 flex-col items-center space-y-6 border-l border-l-primary-400 bg-primary-200 p-4"
         >
           <p class="text-lg font-semibold text-primary-900">Statistics</p>
+
+          <div class="flex flex-col gap-4">
+          <UFormGroup label="Color Threshold">
+            <URange 
+              v-model="colorRange" 
+              :min="0" 
+              :max="100" 
+              :step="1"
+            />
+            <div class="text-xs text-gray-500 mt-1">
+              Current value: {{ colorRange }}
+            </div>
+          </UFormGroup>
+
+          <UFormGroup label="Batch Size">
+            <URange 
+              v-model="batchSize" 
+              :min="0" 
+              :max="100" 
+              :step="5"
+            />
+            <div class="text-xs text-gray-500 mt-1">
+              Current value: {{ batchSize }}
+            </div>
+          </UFormGroup>
+        </div>
 
           <div class="w-full rounded-lg border border-primary-400">
             <table class="w-full overflow-hidden rounded-lg shadow-md">
@@ -269,6 +295,9 @@ import { ref, onMounted, nextTick } from 'vue';
 
 const viewerStore = useViewerStore();
 const isVisible = ref(false);
+
+const colorRange = ref(10);
+const batchSize = ref(10);
 
 const dropdownItems = [
   [
