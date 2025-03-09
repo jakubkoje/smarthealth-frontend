@@ -112,9 +112,15 @@
               v-if="viewerStore.selectionComplete"
               class="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center border-t border-t-primary-400 bg-primary-200 bg-opacity-80 p-4 shadow-lg"
             >
-              <UButton class="" @click="processPatch"
-                >Process patch</UButton
+              <UButton 
+                :loading="isProcessing" 
+                :color="isProcessed ? 'green' : 'primary'" 
+                :icon="isProcessed ? 'i-heroicons-check' : undefined"
+                class="" 
+                @click="processPatch"
               >
+                {{ buttonText }}
+              </UButton>
             </div>
           </Transition>
         </main>
@@ -384,7 +390,16 @@ const tools = [
   },
 ];
 
+const isProcessing = ref(false);
+const isProcessed = ref(false);
+
+const buttonText = ref("Process patch");
+
 const processPatch = async () => {
+  // Reset states
+  isProcessing.value = true;
+  isProcessed.value = false;
+  
   // Call the predict_patch endpoint with the selected rectangle coordinates
   const response = await useFetch('http://0.0.0.0:7030/ikem_api/predict_patch', {
     method: 'POST',
@@ -395,6 +410,7 @@ const processPatch = async () => {
 
   if (response.error.value) {
     console.error('Error predicting patch:', response.error.value);
+    isProcessing.value = false;
     return;
   }
 
@@ -413,6 +429,7 @@ const processPatch = async () => {
       if (statusResponse.error.value) {
         console.error('Error checking task status:', statusResponse.error.value);
         clearInterval(statusInterval); // Stop polling on error
+        isProcessing.value = false;
         return;
       }
 
@@ -435,9 +452,15 @@ const processPatch = async () => {
         
         // Show the statistics sidebar
         isVisible.value = true;
+        
+        // Update button states
+        isProcessing.value = false;
+        isProcessed.value = true;
+        
       } else if (status === 'failed') {
         console.error('Task failed:', statusResponse.data.value.error);
         clearInterval(statusInterval); // Stop polling on failure
+        isProcessing.value = false;
       }
       // Continue polling for 'pending' or 'processing' status
     } catch (error) {
