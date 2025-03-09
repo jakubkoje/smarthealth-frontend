@@ -148,7 +148,7 @@
             </div>
           </UFormGroup>
 
-          <UFormGroup label="Batch Size">
+          <UFormGroup label="Cell Size">
             <URange 
               v-model="batchSize" 
               :min="0" 
